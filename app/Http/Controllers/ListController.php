@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JsUser;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+
 class ListController extends Controller
 {
     public function getList () {
@@ -14,10 +12,8 @@ class ListController extends Controller
         $users = $response->json();
         $models = JsUser::paginate(10); // previous registers
 
-        if(JsUser::all()->count() > 0){
-            return view('list', ['users' => $models]);
-        }else{
-            foreach ($users['users'] as $user){
+        if(JsUser::all()->count() <= 0) {
+            foreach ($users['users'] as $user) {
                 $newUser = JsUser::create([
                     'id' => $user['id'],
                     'age' => $user['age'],
@@ -26,8 +22,9 @@ class ListController extends Controller
                 ]);
                 $newUser->save(); // insert info
             }
-            return view('list', ['users' => $models]); //show
+            //show
         }
+        return view('list', ['users' => $models]);
     }
 
 }
